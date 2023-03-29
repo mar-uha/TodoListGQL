@@ -1,3 +1,4 @@
+[GraphQLDescription("Used to group the do list item into groups")]
 public class ItemList
 {
     public ItemList()

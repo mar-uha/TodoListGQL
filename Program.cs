@@ -7,9 +7,16 @@ services.AddPooledDbContextFactory<ApiDbContext>(options =>
     options.UseSqlite("DataSource=app.db; Cache=Shared"));
 
 
+// This will be the entry point and will provide us with a schema 
+// construction
 services.AddGraphQLServer()
     .RegisterDbContext<ApiDbContext>(DbContextKind.Pooled)
-    .AddQueryType<Query>();
+    .AddQueryType<Query>()
+    .AddType<ListType>()
+    .AddType<ItemType>()
+    .AddProjections()
+    .AddSorting()
+    .AddFiltering();
 
 var app = builder.Build();
 app.UseRouting();
