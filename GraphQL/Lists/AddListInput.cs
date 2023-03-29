@@ -1,0 +1,1 @@
+public record AddListInput(string name);

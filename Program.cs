@@ -14,6 +14,7 @@ services.AddGraphQLServer()
     .AddQueryType<Query>()
     .AddType<ListType>()
     .AddType<ItemType>()
+    .AddMutationType<Mutation>()
     .AddProjections()
     .AddSorting()
     .AddFiltering();
