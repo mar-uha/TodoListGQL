@@ -1,0 +1,1 @@
+public record AddItemPayload(ItemData item);

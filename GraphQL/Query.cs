@@ -17,7 +17,7 @@ public class Query
     }
 
     [UseDbContext(typeof(ApiDbContext))]
-    [UseProjection] //=> we have remove it since we have used explicit resolvers
+    //[UseProjection] //=> we have remove it since we have used explicit resolvers
     [UseFiltering]
     [UseSorting]
     public IQueryable<ItemList> GetLists(ApiDbContext context)
