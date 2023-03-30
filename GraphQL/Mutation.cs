@@ -1,8 +1,14 @@
+using HotChocolate.Subscriptions;
+
 public class Mutation
 {
     // this attribute will help us utilise the multi threaded api db context
     [UseDbContext(typeof(ApiDbContext))]
-    public async Task<AddListPayload> AddListAsync(AddListInput input, ApiDbContext context)
+    public async Task<AddListPayload> AddListAsync(
+        AddListInput input,
+        ApiDbContext context,
+        [Service] ITopicEventSender eventSender,
+        CancellationToken cancellationToken)
     {
         var list = new ItemList
         {
@@ -10,7 +16,10 @@ public class Mutation
         };
 
         context.Lists.Add(list);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(cancellationToken);
+
+        // we emit our subscription
+        await eventSender.SendAsync(nameof(Subscription.OnListAdded), list, cancellationToken);
 
         return new AddListPayload(list);
     }

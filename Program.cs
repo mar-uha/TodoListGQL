@@ -6,7 +6,6 @@ var services = builder.Services;
 services.AddPooledDbContextFactory<ApiDbContext>(options =>
     options.UseSqlite("DataSource=app.db; Cache=Shared"));
 
-
 // This will be the entry point and will provide us with a schema 
 // construction
 services.AddGraphQLServer()
@@ -15,12 +14,17 @@ services.AddGraphQLServer()
     .AddType<ListType>()
     .AddType<ItemType>()
     .AddMutationType<Mutation>()
+    .AddSubscriptionType<Subscription>()
+    .AddInMemorySubscriptions()
     .AddProjections()
     .AddSorting()
     .AddFiltering();
 
 var app = builder.Build();
+
 app.UseRouting();
+
+app.UseWebSockets();
 
 app.UseEndpoints(endpoints =>
 {
@@ -31,7 +35,6 @@ app.UseGraphQLVoyager("/graphql-voyager", new VoyagerOptions()
 {
     GraphQLEndPoint = "/graphql"
 });
-
 
 app.MapGet("/", () => "Hello World!");
 
