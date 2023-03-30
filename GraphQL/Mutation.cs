@@ -31,4 +31,16 @@ public class Mutation
 
         return new AddItemPayload(item);
     }
+
+    [UseDbContext(typeof(ApiDbContext))]
+    public async Task<bool> RemoveItemAsync(int itemId, ApiDbContext context)
+    {
+        var item = context.Items.SingleOrDefault(x => x.Id == itemId);
+
+        // TODO: check if item exist and return false
+        context.Items.Remove(item);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
 }
