@@ -52,4 +52,16 @@ public class Mutation
 
         return true;
     }
+
+    [UseDbContext(typeof(ApiDbContext))]
+    public async Task<bool> DoneItemAsync(int itemId, ApiDbContext context)
+    {
+        var item = context.Items.SingleOrDefault(x => x.Id == itemId);
+        // TODO: check if item exist and return false
+        item.Done = !item.Done;
+        context.Items.Update(item);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
 }

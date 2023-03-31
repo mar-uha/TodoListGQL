@@ -7,12 +7,18 @@ import { Apollo, gql } from 'apollo-angular';
   styleUrls: ['./list.component.sass']
 })
 export class ListComponent implements OnInit {
-  
+
   loading = true;
   error: any;
   lists: any[] = [];
 
-  constructor(private apollo: Apollo) {}
+  DONE_ITEM = gql`
+    mutation DoneItem($itemId: Int!) {
+      doneItem(itemId: $itemId)
+    }
+  `;
+
+  constructor(private apollo: Apollo) { }
 
   ngOnInit(): void {
     this.apollo.watchQuery({
@@ -20,6 +26,7 @@ export class ListComponent implements OnInit {
         lists {
           name
           itemDatas {
+            id
             title
             description
             done
@@ -27,11 +34,21 @@ export class ListComponent implements OnInit {
         }
       }`
     })
-    .valueChanges.subscribe((result: any) => {
-      console.log(result);
-      this.lists = result.data?.lists
-      this.loading = result.loading;
-      this.error = result.error;
-    });
+      .valueChanges.subscribe((result: any) => {
+        this.lists = result.data?.lists
+        this.loading = result.loading;
+        this.error = result.error;
+      });
+  }
+
+  protected onChecked(itemId: number) {
+    this.apollo
+      .mutate({
+        mutation: this.DONE_ITEM,
+        variables: {
+          itemId
+        },
+      })
+      .subscribe();
   }
 }
